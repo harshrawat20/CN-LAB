@@ -1,0 +1,57 @@
+#Displaying contents of the file
+
+import socket
+IP = socket.gethostbyname(socket.gethostname())
+PORT = 4455
+ADDR = (IP, PORT)
+FORMAT = "utf-8"
+SIZE = 1024
+
+def main():
+    print("Server is starting...")
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.bind(ADDR)
+    server.listen()
+    print("listening...")
+
+    while(True):
+        conncn, addrs = server.accept()
+        print(f"new connection {addrs} connected")
+        filename = conncn.recv(SIZE).decode(FORMAT)
+        print(filename)
+        data = ""
+        my_list = ""
+        file = open(filename, 'r')
+        content = file.read()
+        conncn.send(content.encode(FORMAT))
+
+main()
+
+
+
+#********
+
+import socket
+IP = socket.gethostbyname(socket.gethostname())
+PORT = 4455
+FORMAT = "utf-8"
+ADDR = (IP, PORT)
+SIZE = 1024
+
+def main():
+    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client.connect(ADDR)
+    file_name = input("Enter the file name to query : ")
+    
+    client.send(file_name.encode(FORMAT))
+    msg = client.recv(SIZE).decode(FORMAT)
+    msg_list = msg.split(" ")
+    if (msg_list[0] == "404"):
+        print(msg)
+    else:
+        print(f"[SUCCESS]File Recieved successfully \nContent are : ")
+        print(msg)
+
+
+main()
+
